@@ -1,0 +1,6 @@
+{
+    "yaml.schemas": {
+        "file:///c%3A/Users/lena/scoop/apps/vscode/1.79.2/data/extensions/ms-python.python-2023.12.0/schemas/conda-environment.json": "file:///c%3A/Users/lena/Development/Projects/Python/project-1.0/.pre-commit-config.yaml"
+    },
+    "python.analysis.typeCheckingMode": "basic"
+}

@@ -1,0 +1,56 @@
+[project]
+name = "rpgcord"
+description = ""
+authors = [ { name = "RPGcord Team" } ]
+dependencies = [
+    "disnake[speed]>=2.9.0",
+    "aiomysql>=0.2.0",
+    "loguru>=0.7.0",
+    "disnake-ext-plugins @ git+https://github.com/LiTechO/disnake-ext-plugins@v0.2.2",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "Proprietary" }
+dynamic = ["version"]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pyright>=1.1.323",
+    "ruff>=0.0.285",
+    "pre-commit>=3.3.3",
+    "yapf>=0.40.1",
+    "Sphinx>=7.2.2",
+    "pytest>=7.4.0",
+    "sphinxcontrib-trio>=1.1.2",
+]
+
+[tool.pdm.version]
+source = "file"
+path = "rpgcord/__init__.py"
+
+[tool.pdm.scripts]
+yapf = { cmd = "yapf", help = "Run yapf" }
+docs = { cmd = "", help = "Run sphinx" }
+lint = { cmd = "ruff", help = "Run ruff" }
+test = { cmd = "pytest", help = "Run pytest" }
+pyright = { cmd = "pyright", help = "Run pyright" }
+setup_env = { cmd = "pdm install -d", help = "Set up the local environment and all dependencies" }
+post_setup_env = { cmd = "pre-commit install --install-hooks" }
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportUnnecessaryTypeIgnoreComment = true
+reportMissingTypeStubs = false
+venvPath = "."
+venv = ".venv"
+
+[tool.yapf]
+based_on_style = "pep8"
+spaces_around_default_or_named_assign = true
+spaces_around_dict_delimiters = true
+spaces_before_comment = 2
+split_before_dot = true
