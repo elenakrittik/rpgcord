@@ -163,4 +163,8 @@ cython_debug/
 .pdm-python
 .pdm-build
 
+# Ruff
+
+.ruff_cache
+
 **/config.py

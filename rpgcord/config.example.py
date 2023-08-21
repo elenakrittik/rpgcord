@@ -20,7 +20,7 @@ class DatabaseConfig:
 config = Config(
     db = DatabaseConfig(
         username = "rpgcord",
-        password = "",
+        password = "mypassword",
         database = "rpgcord",
         connport = 3306,
         connaddr = "127.0.0.1",

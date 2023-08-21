@@ -26,6 +26,8 @@ dev = [
     "Sphinx>=7.2.2",
     "pytest>=7.4.0",
     "sphinxcontrib-trio>=1.1.2",
+    "furo>=2023.8.19",
+    "sphinx-autobuild>=2021.3.14",
 ]
 
 [tool.pdm.version]
@@ -34,12 +36,14 @@ path = "rpgcord/__init__.py"
 
 [tool.pdm.scripts]
 yapf = { cmd = "yapf", help = "Run yapf" }
-docs = { cmd = "", help = "Run sphinx" }
+docs = { cmd = "sphinx-autobuild docs docs/_build/html", help = "Run Sphinx documentation server" }
+build_docs = { cmd = "cd docs && make html", help = "Build Sphinx documentation" }
 lint = { cmd = "ruff", help = "Run ruff" }
 test = { cmd = "pytest", help = "Run pytest" }
 pyright = { cmd = "pyright", help = "Run pyright" }
 setup_env = { cmd = "pdm install -d", help = "Set up the local environment and all dependencies" }
 post_setup_env = { cmd = "pre-commit install --install-hooks" }
+rpgcord = { cmd = "python -m rpgcord", help = "Run RPGcord" }
 
 [tool.pyright]
 typeCheckingMode = "strict"
