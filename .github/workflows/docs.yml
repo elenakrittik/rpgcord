@@ -16,5 +16,4 @@ jobs:
         cache: true
 
     - run: pdm install -Gdocs
-    - run: cd docs
-    - run: ./make html
+    - run: cd docs && ./make html
