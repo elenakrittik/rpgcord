@@ -49,3 +49,11 @@ project. When you first open this folder, VS Code will suggest a few
 extensions to be installed. **DO NOT IGNORE THEM**. Installing all of
 these will significantly improve your experience and will move most
 warnings from CLI to the editor.
+
+## Useful commands
+
+`pdm run yapf` - format the code.
+`pdm run lint` - lint the code.
+`pdm run pyright` - type-check the code.
+`pdm run docs` - run documentation server with live-reload.
+`pdm run rpgcord` - run bot.
