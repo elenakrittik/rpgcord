@@ -19,8 +19,6 @@ build-backend = "pdm.backend"
 
 [tool.pdm.dev-dependencies]
 dev = ["pre-commit>=3.3.3"]
-
-[tool.pdm.optional-dependencies]
 type-check = ["pyright>=1.1.323"]
 lint = ["ruff>=0.0.285"]
 format = ["yapf>=0.40.1"]
