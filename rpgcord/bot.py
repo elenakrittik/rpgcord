@@ -3,6 +3,7 @@ from disnake.ext import commands
 
 
 class RPGcord(commands.InteractionBot):
-    """RPGcord"""
+    """RPGcord."""
+
     db: aiomysql.Connection
     cursor: aiomysql.Cursor

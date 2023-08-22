@@ -3,12 +3,13 @@ import asyncio
 
 from .bot import RPGcord
 from .config import config
+import contextlib
 
 
-async def main():
+async def main() -> None:
     bot = RPGcord(intents = disnake.Intents.all())
     bot.load_extensions("./rpgcord/plugins")
-    bot.i18n.load("./locale")  # type: ignore
+    bot.i18n.load("./locale")  # type: ignore[reportUnknownMemberType]
 
     await bot.start(config.token)
 
@@ -16,9 +17,7 @@ async def main():
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     loop.run_until_complete(main())
-except KeyboardInterrupt:
-    pass
 
 loop.close()

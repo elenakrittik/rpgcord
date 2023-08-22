@@ -4,7 +4,7 @@ plugin = plugins.Plugin(name = "startup")
 
 
 @plugin.listener("on_ready")
-async def on_ready():
+async def on_ready() -> None:
     print("Ready to go!")
 
 
