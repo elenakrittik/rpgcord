@@ -16,4 +16,4 @@ jobs:
         cache: true
 
     - run: pdm install -Gdocs
-    - run: cd docs && ./make html
+    - run: cd docs && pdm run sphinx-build -aE -b html -n . _build/html
