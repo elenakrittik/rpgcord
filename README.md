@@ -26,7 +26,7 @@ when prompted and execute the following to setup database access for RPGcord:
 
 ```sql
 CREATE USER 'rpgcord'@'localhost' IDENTIFIED BY 'mypassword';
-CREATE DATABASE 'rpgcord';
+CREATE DATABASE rpgcord;
 GRANT ALL ON rpgcord.* TO 'rpgcord'@'locahost';
 ```
 
