@@ -36,7 +36,7 @@ path = "rpgcord/__init__.py"
 [tool.pdm.scripts]
 yapf = { cmd = "yapf rpgcord --recursive --in-place", help = "Run yapf" }
 docs = { cmd = "sphinx-autobuild docs docs/_build/html", help = "Run Sphinx documentation server" }
-lint = { cmd = "ruff", help = "Run ruff" }
+lint = { cmd = "ruff ./rpgcord ./docs", help = "Run ruff" }
 pyright = { cmd = "pyright", help = "Run pyright" }
 setup_env = { cmd = "pdm install -d -G:all", help = "Set up the local environment and all dependencies" }
 post_setup_env = { cmd = "pre-commit install --install-hooks" }
