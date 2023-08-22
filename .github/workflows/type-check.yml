@@ -16,4 +16,5 @@ jobs:
         cache: true
 
     - run: pdm install -Gtype-check
+    - run: cp rpgcord/config.example.py rpgcord/config.py
     - run: pdm run pyright
