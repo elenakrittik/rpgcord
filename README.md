@@ -15,7 +15,6 @@ commands inside
 pipx install pdm
 git clone https://github.com/elenakrittik/rpgcord.git
 cd rpgcord
-pdm install -d
 pdm run setup_env
 ```
 

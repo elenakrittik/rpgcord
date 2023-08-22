@@ -18,16 +18,17 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [tool.pdm.dev-dependencies]
-dev = [
-    "pyright>=1.1.323",
-    "ruff>=0.0.285",
-    "pre-commit>=3.3.3",
-    "yapf>=0.40.1",
+dev = ["pre-commit>=3.3.3"]
+
+[tool.pdm.optional-dependencies]
+type-check = ["pyright>=1.1.323"]
+lint = ["ruff>=0.0.285"]
+format = ["yapf>=0.40.1"]
+docs = [
     "Sphinx>=7.2.2",
-    "pytest>=7.4.0",
     "sphinxcontrib-trio>=1.1.2",
-    "furo>=2023.8.19",
     "sphinx-autobuild>=2021.3.14",
+    "furo>=2023.8.19"
 ]
 
 [tool.pdm.version]
@@ -35,15 +36,16 @@ source = "file"
 path = "rpgcord/__init__.py"
 
 [tool.pdm.scripts]
-yapf = { cmd = "yapf", help = "Run yapf" }
+yapf = { cmd = "yapf rpgcord --recursive --in-place", help = "Run yapf" }
 docs = { cmd = "sphinx-autobuild docs docs/_build/html", help = "Run Sphinx documentation server" }
-build_docs = { cmd = "cd docs && make html", help = "Build Sphinx documentation" }
 lint = { cmd = "ruff", help = "Run ruff" }
-test = { cmd = "pytest", help = "Run pytest" }
 pyright = { cmd = "pyright", help = "Run pyright" }
-setup_env = { cmd = "pdm install -d", help = "Set up the local environment and all dependencies" }
+setup_env = { cmd = "pdm install -d -G:all", help = "Set up the local environment and all dependencies" }
 post_setup_env = { cmd = "pre-commit install --install-hooks" }
 rpgcord = { cmd = "python -m rpgcord", help = "Run RPGcord" }
+
+# Not intended for manual usage
+yapf_check = { cmd = "yapf rpgcord --recursive --diff" }
 
 [tool.pyright]
 typeCheckingMode = "strict"
@@ -54,7 +56,44 @@ venv = ".venv"
 
 [tool.yapf]
 based_on_style = "pep8"
+column_limit = 100
 spaces_around_default_or_named_assign = true
 spaces_around_dict_delimiters = true
 spaces_before_comment = 2
 split_before_dot = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "F",       # pyflakes
+    "E", "W",  # pycodestyle
+    "D",       # pydocstyle
+    "D2",      # pydocstyle, docstring formatting
+    "D4",      # pydocstyle, docstring structure/content
+    "ANN",     # flake8-annotations
+    "ASYNC",   # flake8-async
+    "S",       # flake8-bandit
+    "B",       # flake8-bugbear
+    "COM",     # flake8-commas
+    "C4",      # flake8-comprehensions
+    "DTZ",     # flake8-datetimez
+    "EM",      # flake8-errmsg
+    "PIE",     # flake8-pie
+    "Q",       # flake8-quotes
+    "RSE",     # flake8-raise
+    "RET",     # flake8-return
+    "SIM",     # flake8-simplify
+    "TID",     # flake8-tidy-imports
+    "TCH",     # flake8-type-checking
+    # "PT",      # flake8-pytest-style
+    "TD",      # flake8-todos
+    # "FIX",     # flake8-fixme
+    "ERA",     # eradicate
+    "PGH",     # pygrep-hooks
+    "PL",      # pylint
+    "TRY",     # tryceratops
+    "FLY",     # flynt
+    "PERF",    # perflint
+    "RUF",     # ruff
+]
