@@ -1,16 +1,16 @@
-## Summary
+## Общее описание
 
-<!-- What is this pull request for? Does it fix any issues? -->
+<!-- О чем этот PR? Исправляет ли он какие-либо Проблемы? -->
 
-## Checklist
+## Чеклист
 
-<!-- Put an x inside [ ] to check it, like so: [x] -->
+<!-- Поставьте `x` внутри [ ] чтобы отметить галочку, вот так: [x] -->
 
-- [ ] If code changes were made, then they have been tested
-    - [ ] I have updated the documentation to reflect the changes
-    - [ ] I have formatted the code properly by running `pdm run yapf`
-    - [ ] I have type-checked the code by running `pdm run pyright`
-    - [ ] I have linted the code by running `pdm run lint`
-- [ ] This PR fixes an issue
-- [ ] This PR adds something new (e.g. new method or parameters)
-- [ ] This PR is **not** a code change (e.g. documentation, README, ...)
+- [ ] Если код был изменен, то он был протестирован
+    - [ ] Я обновил документацию согласно сделанным изменениям.
+    - [ ] Я отформатировал код используя `pdm run format`
+    - [ ] Я проверил код на типизацию используя `pdm run type-check`
+    - [ ] Я проверил код линтером используя `pdm run lint`
+- [ ] Этот PR исправляет Проблему
+- [ ] Этот PR добавляет что-то новое (например, новые функции или параметры)
+- [ ] Этот PR **не изменяет** код (только документацию, README, ...)
