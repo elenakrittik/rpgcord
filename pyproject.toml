@@ -4,9 +4,9 @@ description = ""
 authors = [ { name = "RPGcord Team" } ]
 dependencies = [
     "disnake[speed]>=2.9.0",
-    "aiomysql>=0.2.0",
     "loguru>=0.7.0",
     "disnake-ext-plugins @ git+https://github.com/LiTechO/disnake-ext-plugins@v0.2.2",
+    "asyncmy>=0.2.8",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
