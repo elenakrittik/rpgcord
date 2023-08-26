@@ -1,10 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass
 
+import disnake
+
 
 @dataclass
 class Config:
     db: DatabaseConfig
+    colors: ColorConfig
     token: str  # Bot token ("ihaifbiobiof.faifhhaf.sjebfisbgibgi")
 
 
@@ -17,6 +20,11 @@ class DatabaseConfig:
     connaddr: str  # MySQL database connection address ("127.0.0.1")
 
 
+@dataclass
+class ColorConfig:
+    primary_color: disnake.Color
+
+
 config = Config(
     db = DatabaseConfig(
         username = "rpgcord",
@@ -25,5 +33,6 @@ config = Config(
         connport = 3306,
         connaddr = "127.0.0.1",
     ),
+    colors = ColorConfig(primary_color = disnake.Color.fuchsia(), ),
     token = "",
 )
