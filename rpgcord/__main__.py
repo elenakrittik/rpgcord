@@ -1,17 +1,20 @@
-import disnake
 import asyncio
+import contextlib
+
+import disnake
+from disnake.ext.fluent import FluentStore
 
 from .bot import RPGcord
 from .config import config
-import contextlib
 
 
 async def main() -> None:
     bot = RPGcord(intents = disnake.Intents.all())
     bot.load_extensions("./rpgcord/plugins")
-    bot.i18n.load("./locale")  # type: ignore[reportUnknownMemberType]
+    bot.i18n = FluentStore()
+    bot.i18n.load("./locale")
 
-    await bot.start(config.token)
+    await bot.start(config.bot.token)
 
 
 loop = asyncio.new_event_loop()

@@ -1,6 +1,8 @@
 from disnake.ext import plugins
 
-plugin = plugins.Plugin(name = "startup")
+from rpgcord.bot import RPGcord
+
+plugin: plugins.Plugin[RPGcord] = plugins.Plugin(name = "startup")
 
 
 @plugin.listener("on_ready")
