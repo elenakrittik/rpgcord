@@ -3,6 +3,7 @@ import asyncio
 
 from .bot import RPGcord
 from .config import config
+from .database import create_tables
 import contextlib
 
 
@@ -11,6 +12,7 @@ async def main() -> None:
     bot.load_extensions("./rpgcord/plugins")
     bot.i18n.load("./locale")  # type: ignore[reportUnknownMemberType]
 
+    await create_tables()
     await bot.start(config.token)
 
 
