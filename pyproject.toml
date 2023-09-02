@@ -52,7 +52,7 @@ reportUnnecessaryTypeIgnoreComment = true
 reportMissingTypeStubs = false
 venvPath = "."
 venv = ".venv"
-exclude = ["typings/*"]
+extend-exclude = ["typings/*"]
 
 [tool.yapf]
 based_on_style = "pep8"
