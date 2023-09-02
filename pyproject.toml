@@ -50,6 +50,7 @@ post_setup_env = { cmd = "pre-commit install --install-hooks" }
 typeCheckingMode = "strict"
 reportUnnecessaryTypeIgnoreComment = true
 reportMissingTypeStubs = false
+reportMissingTypeArgument = false
 venvPath = "."
 venv = ".venv"
 
