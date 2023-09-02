@@ -9,13 +9,14 @@ async def create_tables() -> None:
                                 password = config.db.password,
                                 db = config.db.database)
 
-    async with con.cursor() as cur:
-        await cur.execute("""
+    async with con.cursor() as cur:  # type: ignore[reportUnknownVariableType]
+        await cur.execute(  # type: ignore[reportUnknownVariableType]
+            """
             CREATE TABLE IF NOT EXISTS users (
                 id INT,
                 name VARCHAR(255)
             );
-        """)
+        """)  # type: ignore[reportUnknownVariableType]
         await con.commit()
 
     con.close()
