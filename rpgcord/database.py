@@ -16,7 +16,7 @@ async def create_tables() -> None:
                 id INT,
                 name VARCHAR(255)
             );
-        """)  # type: ignore[reportUnknownVariableType]
+        """)
         await con.commit()
 
     con.close()
