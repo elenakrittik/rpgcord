@@ -20,9 +20,9 @@ class DatabaseConfig:
 config = Config(
     db = DatabaseConfig(
         username = "rpgcord",
-        password = "mypassword",
+        password = "lol198",
         database = "rpgcord",
-        connport = 3306,
+        connport = 3307,
         connaddr = "127.0.0.1",
     ),
     token = "",
