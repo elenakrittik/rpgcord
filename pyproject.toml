@@ -52,7 +52,7 @@ reportUnnecessaryTypeIgnoreComment = true
 reportMissingTypeStubs = false
 venvPath = "."
 venv = ".venv"
-extend-exclude = ["typings/*"]
+exclude = ["**/node_modules", "**/__pycache__", "**/.*",  "typings/*"]
 
 [tool.yapf]
 based_on_style = "pep8"
