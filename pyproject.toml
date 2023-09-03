@@ -8,6 +8,7 @@ dependencies = [
     "loguru>=0.7.0",
     "disnake-ext-fluent @ git+https://github.com/elenakrittik/disnake-ext-fluent@v0.1.0a1",
     "disnake-ext-plugins @ git+https://github.com/LiTechO/disnake-ext-plugins@v0.3.0",
+    "numpy>=1.25.2",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

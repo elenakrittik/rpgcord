@@ -1,6 +1,7 @@
-from typing import Any, Self, TypeGuard, TypeVar, cast
+from typing import Any, Optional, Self, TypeGuard, TypeVar, cast
 
 import disnake
+import loguru
 
 from rpgcord.bot import RPGcord
 from rpgcord.config import config
@@ -73,3 +74,19 @@ def mkembed(
         color=color,
         **kwargs,
     )
+
+
+def find_component_by_custom_id(
+    inter: disnake.MessageInteraction,
+    custom_id: str,
+    errmsg: Optional[str] = None,
+) -> Optional[disnake.components.MessageComponent]:
+    for row in inter.message.components:
+        for comp in row.children:
+            if check_cid(comp.custom_id, custom_id):
+                return comp
+
+    if errmsg is not None:
+        loguru.logger.error(errmsg)
+
+    return None

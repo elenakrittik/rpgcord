@@ -13,6 +13,10 @@ registration_q1_desc = **What's your favorite playstyle?**
 registration_q1o1_title = Stealth
 registration_q1o1_desc = Sneaky peaky
 
+registration_q2_desc = **Какой вы хотите вкус мороженого?**
+registration_q2o1_title = Клубничный
+registration_q2o1_desc = Ням-ням
+
 registration_charmgr_desc = Distribute your initial characteristics, then click { registration_charmgr_done }.
 registration_charmgr_done = Done!
 registration_charmgr_select_placeholder = Select characteristic to adjust

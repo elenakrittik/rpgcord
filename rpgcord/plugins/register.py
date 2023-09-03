@@ -1,17 +1,20 @@
-from typing import Any, List, Optional, Tuple, cast
+from typing import Any, Optional, Tuple, cast
+
 import disnake
 from disnake.ext import plugins
-import loguru
 
 from rpgcord.bot import RPGcord
-from rpgcord.config import config
+from rpgcord.data.class_data import NUMBER_OF_RECOMMENDED_CLASSES, classes
 from rpgcord.data.custom_ids import CustomId
 from rpgcord.data.registration_data import questions
 from rpgcord.data.characteristic_data import characteristics
+from rpgcord.data.class_data import CharacterClass, temp_dot_values # TODO
+from rpgcord.maths import product_of_char_list
 from rpgcord.utils import (
     dump_state, parse_state, check_cid,
     relict, localize as _, mkembed,
 )
+from rpgcord.utils import find_component_by_custom_id
 
 plugin: plugins.Plugin[RPGcord] = plugins.Plugin(name = "register")
 
@@ -191,11 +194,15 @@ def create_charmgr_description(
 
     return "".join((
         _("registration_charmgr_desc", inter) + "\n\n",
-        *(
-            f"{_(char.l10n_name, inter)}: **{state.get(char.key) or 0}**\n"
-            for char
-            in characteristics
-        ),
+        create_chars_outline(inter, state),
+    ))
+
+
+def create_chars_outline(inter: disnake.MessageInteraction, state: relict[str, Any]) -> str:
+    return "".join((
+        f"{_(char.l10n_name, inter)}: **{state.get(char.key) or 0}**\n"
+        for char
+        in characteristics.values()
     ))
 
 
@@ -219,7 +226,7 @@ def create_charmgr_components(
                         default=char.key == selected_char,
                     )
                     for char
-                    in characteristics
+                    in characteristics.values()
                 ],
                 custom_id=CustomId.REGISTRATION_CHARMGR_SELECT_CHAR_TEMPLATE.format(selected_char),
             ),
@@ -247,25 +254,29 @@ def create_charmgr_components(
         ],
     ]
 
-# TODO: Deduplicate below two
-
 def get_done_button_state(inter: disnake.MessageInteraction) -> relict[str, Any]:
-    for row in inter.message.components:
-        for comp in row.children:
-            if check_cid(comp.custom_id, CustomId.REGISTRATION_CHARMGR_DONE):
-                return parse_state(comp.custom_id)
+    comp = find_component_by_custom_id(
+        inter,
+        CustomId.REGISTRATION_CHARMGR_DONE,
+        "done button not found",
+    )
 
-    loguru.logger.error("done button not found")
+    if comp and comp.custom_id:
+        return parse_state(comp.custom_id)
+
     return relict()
 
 
 def get_selected_char(inter: disnake.MessageInteraction) -> str:
-    for row in inter.message.components:
-        for comp in row.children:
-            if check_cid(comp.custom_id, CustomId.REGISTRATION_CHARMGR_SELECT_CHAR):
-                return parse_state(comp.custom_id).char
+    comp = find_component_by_custom_id(
+        inter,
+        CustomId.REGISTRATION_CHARMGR_SELECT_CHAR,
+        "chamgr select not found",
+    )
 
-    loguru.logger.error("chamgr select not found")
+    if comp and comp.custom_id:
+        return parse_state(comp.custom_id).char
+
     return "none"
 
 
@@ -273,7 +284,7 @@ def create_default_characteristic_state() -> relict[str, int]:
     return relict({
         char.key: 0
         for char
-        in characteristics
+        in characteristics.values()
     })
 
 
@@ -283,15 +294,170 @@ async def registration_charmgr_done_handler(inter: disnake.MessageInteraction) -
         return
 
     done_state = get_done_button_state(inter)
-    recommended_classes = get_recommended_classes(done_state)
+    recommended_classes = await get_recommended_classes(done_state)
 
     await inter.response.edit_message(
         embed=mkembed(
             title=_("registration_title", inter),
-            description=create_choose_a_class_desc(inter),
+            description=create_choose_a_class_desc(
+                inter,
+                recommended_classes[0],
+            ),
         ),
-        components=create_charmgr_components(inter, done_state),
+        components=create_choose_a_class_components(
+            inter,
+            recommended_classes,
+            recommended_classes[0],
+            done_state,
+        ),
+    )
+
+
+async def get_recommended_classes(done_state: relict[str, Any]) -> list[int]:
+    temp = [(key, int(value)) for key, value in done_state.items()] # TODO: there will be a bug when we implement questions
+    temp.sort(key=lambda x: ord(x[0][0]))
+    chars = [x[1] for x in temp]
+    product = product_of_char_list(chars)
+
+    differences: relict[float, CharacterClass] = relict()
+
+    for dot, cls in temp_dot_values.items():
+        differences[abs(dot - product)] = cls
+
+    recommended_classes: list[CharacterClass] = []
+
+    while True:
+        dot = min(differences.keys())
+        recommended_classes.append(differences.pop(dot))
+
+        if len(recommended_classes) >= NUMBER_OF_RECOMMENDED_CLASSES:
+            break
+
+    return [classes.index(cls) for cls in recommended_classes]
+
+
+def create_choose_a_class_desc(
+    inter: disnake.MessageInteraction,
+    recommended_class: int,
+) -> str:
+    cls = classes[recommended_class]
+
+    return "".join((
+        _("registration_choose_your_class", inter) + "\n\n",
+        "**" + _(cls.l10n_title, inter) + "**\n",
+        _(cls.l10n_desc, inter),
+    ))
+
+
+def create_choose_a_class_components(
+    inter: disnake.MessageInteraction,
+    recommended_classes: list[int],
+    recommended_class: int,
+    done_state: relict[str, Any],
+) -> disnake.ui.Components[disnake.ui.MessageUIComponent]:
+    return [
+        [
+            disnake.ui.StringSelect(
+                options=[
+                    disnake.SelectOption(
+                        label=_(classes[cls].l10n_title, inter),
+                        value=str(cls),
+                        default=cls == recommended_class,
+                    )
+                    for cls
+                    in recommended_classes
+                ],
+                custom_id=CustomId.REGISTRATION_CHOOSE_A_CLASS_SELECT_TEMPLATE.format(
+                    str(recommended_class),
+                ),
+            ),
+        ],
+        [
+            disnake.ui.Button(
+                label=_("registration_choose_your_class_pick_it", inter),
+                style=disnake.ButtonStyle.blurple,
+                custom_id=dump_state(CustomId.REGISTRATION_CHOOSE_A_CLASS_PICK_IT, done_state),
+            ),
+        ],
+    ]
+
+
+@plugin.listener("on_dropdown")
+async def registration_choose_a_class_select_handler(
+    inter: disnake.MessageInteraction,
+) -> None:
+    if not check_cid(inter.component.custom_id, CustomId.REGISTRATION_CHOOSE_A_CLASS_SELECT):
+        return
+
+    state = parse_state(inter.component.custom_id)
+
+    if not inter.values:
+        return
+
+    state.cls = int(inter.values[0])
+
+    recommended_classes = [
+        int(option.value)
+        for option
+        in cast(disnake.StringSelectMenu, inter.component).options
+    ]
+
+    pick_it_button = find_component_by_custom_id(inter, CustomId.REGISTRATION_CHOOSE_A_CLASS_PICK_IT)
+
+    if not pick_it_button or not pick_it_button.custom_id:
+        return
+
+    pick_it_state = parse_state(pick_it_button.custom_id)
+
+    await inter.response.edit_message(
+        embed=mkembed(
+            title=_("registration_title", inter),
+            description=create_choose_a_class_desc(inter, state.cls),
+        ),
+        components=create_choose_a_class_components(
+            inter, recommended_classes,
+            state.cls, pick_it_state,
+        ),
+    )
+
+
+@plugin.listener("on_button_click")
+async def registration_choose_a_class_pick_it_handler(inter: disnake.MessageInteraction) -> None:
+    if not check_cid(inter.component.custom_id, CustomId.REGISTRATION_CHOOSE_A_CLASS_PICK_IT):
+        return
+
+    cls_select = find_component_by_custom_id(inter, CustomId.REGISTRATION_CHOOSE_A_CLASS_SELECT)
+
+    if not cls_select or not cls_select.custom_id:
+        return
+
+    cls_title_key = classes[int(parse_state(cls_select.custom_id).cls)].l10n_title
+
+    char_state = parse_state(inter.component.custom_id)
+    char_outline = create_chars_outline(inter, char_state)
+
+    await inter.response.edit_message(
+        embed=mkembed(
+            title=_("registration_title", inter),
+            description="".join((
+                _("registration_end_header", inter) + "\n\n",
+                "**" + _(cls_title_key, inter) + "**\n\n",
+                char_outline,
+                "\n\n" + _("registration_end_happy_game", inter),
+            )),
+        ),
+        components=[],
     )
 
 
 setup, teardown = plugin.create_extension_handlers()
+
+# TODO: простое нажатие готов ломает все
+# TODO: можно ставить отрицательные значения
+# TODO: можно ставить бесконечно
+# TODO: задокументировать
+# TODO: локализации команд
+# TODO: картинки для классов
+# TODO: любая кар-ка 0 ломает реки
+# TODO: заставить распределить все очки
+# TODO: логи

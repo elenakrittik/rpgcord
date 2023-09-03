@@ -28,4 +28,14 @@ questions: List[Question] = [
             ),
         ],
     ),
+    Question(
+        l10n_desc="registration_q2_desc",
+        options=[
+            QuestionOption(
+                value="abcdc",
+                l10n_title="registration_q2o1_title",
+                l10n_desc="registration_q2o1_desc",
+            ),
+        ],
+    ),
 ]
