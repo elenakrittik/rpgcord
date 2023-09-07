@@ -11,7 +11,7 @@ from .config import config
 async def main() -> None:
     bot = RPGcord(intents = disnake.Intents.all())
     bot.load_extensions("./rpgcord/plugins")
-    bot.i18n = FluentStore()
+    bot.i18n = FluentStore(strict=True)
     bot.i18n.load("./locale")
 
     await bot.start(config.bot.token)

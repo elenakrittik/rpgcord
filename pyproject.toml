@@ -6,7 +6,7 @@ dependencies = [
     "disnake[speed]>=2.9.0",
     "aiomysql>=0.2.0",
     "loguru>=0.7.0",
-    "disnake-ext-fluent @ git+https://github.com/elenakrittik/disnake-ext-fluent@v0.1.0a1",
+    "disnake-ext-fluent @ file:///${PROJECT_ROOT}/../disnake-ext-fluent",
     "disnake-ext-plugins @ git+https://github.com/LiTechO/disnake-ext-plugins@v0.3.0",
     "numpy>=1.25.2",
 ]

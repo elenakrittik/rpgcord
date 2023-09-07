@@ -1,0 +1,1 @@
+TESTCMDDESC = приветики

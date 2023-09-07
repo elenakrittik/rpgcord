@@ -2,12 +2,13 @@ from typing import Any, Optional, Tuple, cast
 
 import disnake
 from disnake.ext import plugins
+import loguru
 
 from rpgcord.bot import RPGcord
 from rpgcord.data.class_data import NUMBER_OF_RECOMMENDED_CLASSES, classes
 from rpgcord.data.custom_ids import CustomId
 from rpgcord.data.registration_data import questions
-from rpgcord.data.characteristic_data import characteristics
+from rpgcord.data.characteristic_data import INITIAL_CHARACTERISTIC_COUNT, characteristics
 from rpgcord.data.class_data import CharacterClass, temp_dot_values # TODO
 from rpgcord.maths import product_of_char_list
 from rpgcord.utils import (
@@ -30,7 +31,7 @@ async def is_registered(inter: disnake.AppCmdInter) -> bool:
     return True
 
 
-@plugin.slash_command()
+@plugin.slash_command(description=disnake.Localized("fuck shit went shitty", key="TESTCMDDESC"))
 async def register(inter: disnake.AppCmdInter) -> None:
     await inter.response.send_message(
         embed=mkembed(
@@ -143,12 +144,31 @@ async def registration_charmgr_adjust_handler(inter: disnake.MessageInteraction)
     if not done_state.get(selected_char):
         done_state[selected_char] = 0
 
+    current = int(done_state[selected_char])
+
     match parse_state(inter.component.custom_id).adj:
         case "+":
-            done_state[selected_char] = int(done_state[selected_char]) + 1
+            remaining = get_remaining_from_done_state(done_state)
+
+            if remaining <= 0:
+                await inter.response.send_message(
+                    "No initial characteristics remaining.", # TODO: fluentize
+                    ephemeral=True,
+                )
+                return
+
+            done_state[selected_char] = current + 1
         case "-":
-            done_state[selected_char] = int(done_state[selected_char]) - 1
+            if current <= 0:
+                await inter.response.send_message(
+                    "Can't go lower 0.", # TODO: fluentize
+                    ephemeral=True,
+                )
+                return
+
+            done_state[selected_char] = current - 1
         case _:
+            loguru.logger.error("Unknown adjustment type.")
             pass
 
     await inter.response.edit_message(
@@ -177,6 +197,17 @@ async def registration_charmgr_select_char_handler(inter: disnake.MessageInterac
         ),
         components=create_charmgr_components(inter, done_state, inter.values[0]),
     )
+
+
+# TODO: Display this
+def get_remaining_from_done_state(done_state: relict[str, Any]) -> int:
+    currently_spent = sum((
+        int(done_state[char]) # NOTE: will break if more props are added
+        for char
+        in characteristics
+    ))
+
+    return INITIAL_CHARACTERISTIC_COUNT - currently_spent
 
 
 def create_charmgr_description(
