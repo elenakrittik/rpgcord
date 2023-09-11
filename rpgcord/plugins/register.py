@@ -24,15 +24,15 @@ plugin: plugins.Plugin[RPGcord] = plugins.Plugin(name = "register")
 async def is_registered(inter: disnake.AppCmdInter) -> bool:
     registered = False  # TODO: fetch from db
 
-    if not registered and inter.application_command.name != "register":
+    if not registered and inter.application_command.name != "test_register":
         await inter.response.send_message(_("not_registered", inter))
         return False
 
     return True
 
 
-@plugin.slash_command(description=disnake.Localized("fuck shit went shitty", key="TESTCMDDESC"))
-async def register(inter: disnake.AppCmdInter) -> None:
+@plugin.slash_command(description=disnake.Localized("L try again", key="TEST"))
+async def test_register(inter: disnake.AppCmdInter) -> None:
     await inter.response.send_message(
         embed=mkembed(
             title=_("registration_title", inter),
